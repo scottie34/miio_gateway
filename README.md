@@ -149,6 +149,12 @@ requires a lot of copy-paste – I abandoned this idea.
 Instead you can use [coupled_alarms](https://github.com/cadavre/coupled_alarms).
 
 ## Changelog
+### v.1.7.0
+fix: resolve exception in _TrackTimeInterval._interval_listener
+
+- Fixed callback issues causing errors in `_TrackTimeInterval._interval_listener`.
+- Improved handling of async_track_time_interval to prevent unhandled exceptions.
+
 ### v.1.6.0
 * Fix restore behaviour of binary_sensor
 
