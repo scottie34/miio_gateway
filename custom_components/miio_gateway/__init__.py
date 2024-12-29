@@ -5,6 +5,7 @@ from time import sleep
 from threading import Thread
 from multiprocessing import Queue
 from datetime import timedelta
+from asyncio import sleep as async_sleep
 
 import voluptuous as vol
 
@@ -271,13 +272,16 @@ class XiaomiGw:
                 func(None, None, EVENT_AVAILABILITY)
 
     @callback
-    def _ping(self, event=None):
+    async def _ping(self, event=None):
         """Queue ping to keep and check connection."""
-        self._pings_sent = self._pings_sent + 1
-        self.send_to_hub({"method": "internal.PING"})
-        sleep(6) # Give it `timeout` time to respond...
-        if self._pings_sent >= 3:
-            self._set_availability(False)
+        try:
+            self._pings_sent = self._pings_sent + 1
+            self.send_to_hub({"method": "internal.PING"})
+            await async_sleep(6)  # Non-blocking sleep, Give it `timeout` time to respond...
+            if self._pings_sent >= 3:
+                self._set_availability(False)
+        except Exception as e:
+                _LOGGER.error(f"Error during _ping execution: {e}")
 
     """Miio gateway protocol parsing."""
 
